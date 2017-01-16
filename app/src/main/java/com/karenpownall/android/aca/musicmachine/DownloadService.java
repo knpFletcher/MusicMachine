@@ -3,33 +3,41 @@ package com.karenpownall.android.aca.musicmachine;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 //service performs long running operations in background without UI
 //need to add service to manifest
+//needs to run on separate thread
 public class DownloadService extends Service {
-    private static final String TAG = DownloadService.class.getSimpleName();
+
+    private DownloadHandler mHandler;
+
+    @Override
+    public void onCreate() {
+        DownloadThread thread = new DownloadThread();
+        thread.setName("DownloadThread");
+        thread.start();
+
+        while (thread.mHandler == null){
+            //not best practice, makes thread wait until not null
+        }
+        mHandler = thread.mHandler;
+        mHandler.setService(this);
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //used for single operation, service stops itself or will run as long as device has power
         String song = intent.getStringExtra(MainActivity.KEY_SONG);
-        downloadSong(song);
-        return Service.START_REDELIVER_INTENT;
-    }
+        Message message = Message.obtain();
+        message.obj = song;
+        message.arg1 = startId;
+        mHandler.sendMessage(message);
 
-    private void downloadSong(String song) {
-        long endTime = System.currentTimeMillis() + 10*1000;
-        while ( System.currentTimeMillis() < endTime){
-            try {
-                Thread.sleep(1000);
-                //wait for 1 second
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        Log.d(TAG, song + " downloaded!");
+        return Service.START_REDELIVER_INTENT;
+            //started if method returns value
+            //stopped only when explicitly stopped
     }
 
     @Nullable
