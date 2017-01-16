@@ -1,6 +1,6 @@
 package com.karenpownall.android.aca.musicmachine;
 
-import android.util.Log;
+import android.os.Looper;
 
 public class DownloadThread extends Thread {
 
@@ -9,21 +9,11 @@ public class DownloadThread extends Thread {
 
     @Override
     public void run() {
-        for (String song : Playlist.songs) {
-            downloadSong();
-        }
-    }
-
-    private void downloadSong() {
-        long endTime = System.currentTimeMillis() + 10*1000;
-        while ( System.currentTimeMillis() < endTime){
-            try {
-                Thread.sleep(1000);
-                //wait for 1 second
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        Log.d(TAG, "Song downloaded!");
+        Looper.prepare();
+            //creates looper for thread, and creates message queue
+        mHandler = new DownloadHandler();
+            //handler is associated with looper for current thread
+        Looper.loop();
+            //start looping over message queue
     }
 }
