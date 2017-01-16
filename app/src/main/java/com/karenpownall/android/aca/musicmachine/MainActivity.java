@@ -24,12 +24,23 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "Downloading", Toast.LENGTH_SHORT)
                         .show();
-                downloadSong();
+
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        downloadSong();
+                    }
+                };
+
+                Thread thread = new Thread(runnable);
+                thread.setName("DownloadThread");
+                thread.start();
             }
         });
     }
 
-        //simulate download
+    //simulate download
+    //too much work on main UI, put on new thread
     private void downloadSong() {
         long endTime = System.currentTimeMillis() + 10*1000;
         while ( System.currentTimeMillis() < endTime){
