@@ -5,14 +5,15 @@ import android.util.Log;
 public class DownloadThread extends Thread {
 
     private static final String TAG = DownloadThread.class.getSimpleName();
+    public DownloadHandler mHandler;
 
     @Override
     public void run() {
-        downloadSong();
+        for (String song : Playlist.songs) {
+            downloadSong();
+        }
     }
 
-    //simulate download
-    //too much work on main UI, put on new thread
     private void downloadSong() {
         long endTime = System.currentTimeMillis() + 10*1000;
         while ( System.currentTimeMillis() < endTime){

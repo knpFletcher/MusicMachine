@@ -1,4 +1,6 @@
 package com.karenpownall.android.aca.musicmachine;
 
-public class DownloadHandler {
+import android.os.Handler;
+
+public class DownloadHandler extends Handler {
 }
