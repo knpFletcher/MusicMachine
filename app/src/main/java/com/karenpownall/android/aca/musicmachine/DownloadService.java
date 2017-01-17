@@ -44,6 +44,7 @@ public class DownloadService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         //use service as Server in client/server model
+        //communicate with service after starting
         return null;
     }
 
